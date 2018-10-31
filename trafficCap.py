@@ -1,10 +1,15 @@
 from scapy.all import *
+from beaconClass import Beacon
 import sys
 
-num = int(sys.argv[1])
-print("number specified " +  str(num))
+interval = int(sys.argv[1])
+print("interval specified " +  str(num))
+packets = []
+beacon = Beacon("10.20.30.40", "192.168.1.77", 300, 5)
 #only captures TCP packets (probably not safe assumption)
-packets = sniff(count=num, prn = lambda x: x.summary(), timeout=10, filter="tcp")
+while True:
+	packets.append(sniff(prn = lambda x: x.summary(), timeout=interval, filter="tcp"))
+
 print("packets sniffed")
 wrpcap("sampleTraffic.pcap", packets)
 print("packets saved")
