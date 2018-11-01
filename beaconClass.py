@@ -12,6 +12,3 @@ class Beacon:
 	def __str__(self):
 		return ("Beacon IP: " + self.IP + "\nC2IP: " + self.c2IP + "\nInterval: " + str(self.interval) + "\nVariance: " + str(self.variance))
 
-	#could there be other parameters?
-	def signal(self):
-		return IP(dst=self.c2IP, src=self.IP)/TCP()

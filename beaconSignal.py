@@ -3,8 +3,12 @@ import sys
 import time
 
 c2IP = sys.argv[1]
-beacon = IP(dst=c2IP)/TCP()
+interval = int(sys.argv[2])
+beacon = IP(dst=c2IP)/ICMP()
 
 while True:
-	send(beacon)
-	time.sleep(600)
+	uns, ans = sr(beacon, timeout=interval/2)
+	ans.summary()
+	print("#######")
+	uns.summary()
+	time.sleep(interval/2)

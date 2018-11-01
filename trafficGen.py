@@ -6,9 +6,9 @@ from scapy.all import *
 from random import randint, uniform
 import sys
 
-
-num_packets = int(sys.argv[1])
-beacon_interval = int(sys.argv[2])
+pcap_name = sys.argv[1]
+num_packets = int(sys.argv[2])
+beacon_interval = int(sys.argv[3])
 last_beacon = 0
 
 packet_list = []
@@ -30,5 +30,6 @@ for i in range(num_packets):
 
 print("Packets generated")
 print(len(packet_list))
+wrpcap(pcap_name, packet_list)
+print("Written to " + pcap_name)
 
-#now write to pcap
