@@ -9,27 +9,41 @@ import sys
 pcap_name = sys.argv[1]
 num_packets = int(sys.argv[2])
 beacon_interval = int(sys.argv[3])
+
 last_beacon = 0
 
 packet_list = []
 label_list = []
 
+network_ips = []
+
+for i in range(10):
+	network_ips.append("192.168." + str(randint(0,255)) + "." + str(randint(0,255)))
+
+for i in network_ips:
+	print(i)
+
 
 for i in range(num_packets):
 	time = uniform(i - 1, i + 1)
-
+	#if beacon_interval seconds since last beacon
 	if time - last_beacon >= beacon_interval:
+		#create beacon signal
 		last_beacon = time
-		packet = IP(dst="8.8.8.8")/ICMP()
+		source_ip = network_ips[randint(0,len(network_ips)-1)]
+		packet = IP(dst="8.8.8.8",src=source_ip)/ICMP()
 		packet.time = time
 		packet_list.append(packet)
+		label_list.append("beacon")
 	else:
 		packet = IP(dst=str(randint(0,255)) + '.' + str(randint(0,255)) + '.' + str(randint(0,255)) + '.' + str(randint(0,255)))/ICMP()
 		packet.time = time
 		packet_list.append(packet)
+		label_list.append("non-beacon")
 
 print("Packets generated")
 print(len(packet_list))
 wrpcap(pcap_name, packet_list)
 print("Written to " + pcap_name)
 
+#WRITE LABELS TO A FILE
