@@ -7,8 +7,9 @@ from random import randint, uniform
 import sys
 
 pcap_name = sys.argv[1]
-num_packets = int(sys.argv[2])
-beacon_interval = int(sys.argv[3])
+labelfile_name = sys.argv[2]
+num_packets = int(sys.argv[3])
+beacon_interval = int(sys.argv[4])
 
 last_beacon = 0
 
@@ -46,4 +47,11 @@ print(len(packet_list))
 wrpcap(pcap_name, packet_list)
 print("Written to " + pcap_name)
 
-#WRITE LABELS TO A FILE
+
+
+label_file = open(labelfile_name, "w+")
+for i in label_list:
+	label_file.write("%s\n" % i)
+print("Labels written to " + labelfile_name)
+
+sys.exit()
