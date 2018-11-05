@@ -17,13 +17,13 @@ packet_list = []
 label_list = []
 
 network_ips = []
-
+internet_ips = []
 for i in range(10):
 	network_ips.append("192.168." + str(randint(0,255)) + "." + str(randint(0,255)))
+for i in range(100):
+	internet_ips.append(str(randint(1,255)) + "." + str(randint(0,255)) + "." + str(randint(0,255)) + "." + str(randint(0,255)))
 
-for i in network_ips:
-	print(i)
-
+beacon_ip = network_ips[randint(0, len(network_ips) - 1)]
 
 for i in range(num_packets):
 	time = uniform(i - 1, i + 1)
@@ -31,13 +31,14 @@ for i in range(num_packets):
 	if time - last_beacon >= beacon_interval:
 		#create beacon signal
 		last_beacon = time
-		source_ip = network_ips[randint(0,len(network_ips)-1)]
-		packet = IP(dst="8.8.8.8",src=source_ip)/ICMP()
+		packet = IP(dst="8.8.8.8",src=beacon_ip)/ICMP()
 		packet.time = time
 		packet_list.append(packet)
 		label_list.append("beacon")
 	else:
-		packet = IP(dst=str(randint(0,255)) + '.' + str(randint(0,255)) + '.' + str(randint(0,255)) + '.' + str(randint(0,255)))/ICMP()
+		#create background traffic
+		source_ip = network_ips[randint(0,len(network_ips)-1)]
+		packet = IP(dst=internet_ips[randint(0,len(internet_ips) - 1 )], src=source_ip)/ICMP()
 		packet.time = time
 		packet_list.append(packet)
 		label_list.append("non-beacon")
@@ -52,6 +53,9 @@ print("Written to " + pcap_name)
 label_file = open(labelfile_name, "w+")
 for i in label_list:
 	label_file.write("%s\n" % i)
+
 print("Labels written to " + labelfile_name)
 
+#Cleanup
+label_file.close()
 sys.exit()
