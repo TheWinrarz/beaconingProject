@@ -1,4 +1,4 @@
-Source IP,Destination IP,NumRepititions,AvgPeriod,PeriodVariance
+Source IP,Destination IP,NumRepititions,AvgPeriod,PeriodVariance,label
 192.168.218.218,29.92.235.15,16,568.8141598125001,205740.6246730769,non-beacon
 192.168.81.191,13.4.215.91,10,774.5874591999999,508272.1222110485,non-beacon
 192.168.103.163,71.76.177.98,11,798.862653181818,96673.21939386809,non-beacon
