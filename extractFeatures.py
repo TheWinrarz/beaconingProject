@@ -2,12 +2,12 @@
 
 from scapy.all import *
 import sys
-
+import csv
 
 
 
 pcap_filename = sys.argv[1]
-#label_filename = sys.argv[2]
+c2serverIP = sys.argv[2]
 
 
 pcap = rdpcap(pcap_filename)
@@ -15,6 +15,8 @@ pcap = rdpcap(pcap_filename)
 packet_list = []
 #f = open(label_filename, "r")
 #I think i may need to use ^this^ now
+
+
 
 #Saves a list of packets, source ip, dest ip, and time
 #time will be used to calculate period & variance
@@ -35,6 +37,7 @@ repititions = {}
 start_end_times = {}
 period_log = {}
 avg_period = {}
+period_variance = {}
 
 for pkt in packet_list:
 	srcIP = pkt[0]
@@ -45,7 +48,6 @@ for pkt in packet_list:
 		repititions[(srcIP,dstIP)] = 0
 
 	else:
-		#should this be 0 or 1
 		repititions[(srcIP,dstIP)] += 1
 
 	if (srcIP, dstIP) not in start_end_times:
@@ -61,17 +63,20 @@ for entry in repititions:
 	if repititions[entry] != 0:
 
 		avg_period[entry] = sum(period_log[entry]) / repititions[entry]
+		period_variance[entry] = sum((xi - avg_period[entry]) ** 2 for xi in period_log[entry])/ repititions[entry]
+#for key in avg_period:
+#	if repititions[key] > 20:
+#		print(key, avg_period[key], repititions[key])
 
-for key in avg_period:
-	if repititions[key] > 20:
-		print(key, avg_period[key], repititions[key])
+with open('beacon_data.csv', 'w+') as csvfile:
+	writer = csv.writer(csvfile, delimiter=',')
+	writer.writerow(["Source IP", "Destination IP", "NumRepititions", "AvgPeriod", "PeriodVariance"])
+	for key in avg_period:
+		if key[1] == c2serverIP:
+			writer.writerow([key[0], key[1], repititions[key], avg_period[key], period_variance[key], "beacon"])
+		else:
+			writer.writerow([key[0], key[1], repititions[key], avg_period[key], period_variance[key], "non-beacon"])
 
-#calculate variance
-#observation_list = []
-#for key in repititions:
-#	print(key)
-#	print(str(key[0]) + ":" + str(key[1]) + ":" + str(repititions[key]) + ":" + str(avg_period[key]))
-#	observation_list.append((str(key[0]), str(key[0]), repititions[key], avg_period[key]))
 
 #Cleanup
 #f.close()
