@@ -25,7 +25,7 @@ internet_ips = []
 for i in range(num_hosts):
 	network_ips.append("192.168." + str(randint(0,255)) + "." + str(randint(0,255)))
 
-for i in range(num_hosts*2):
+for i in range(100):
 	internet_ips.append(str(randint(1,255)) + "." + str(randint(0,255)) + "." + str(randint(0,255)) + "." + str(randint(0,255)))
 
 for i in range(num_beacons):
@@ -33,6 +33,8 @@ for i in range(num_beacons):
 
 for i in range(num_packets / num_beacons):
 	time = uniform(i - 1, i + 1)
+	if time < 0:
+		time = 0
 	#if beacon_interval seconds since last beacon
 	for beacon in beacon_list:
 		if time - beacon[2] >= beacon[1]:
