@@ -7,7 +7,8 @@ import csv
 
 
 pcap_filename = sys.argv[1]
-c2serverIP = sys.argv[2:]
+csv_filename = sys.argv[2]
+c2serverIP = sys.argv[3:]
 
 
 pcap = rdpcap(pcap_filename)
@@ -68,13 +69,13 @@ for entry in repititions:
 #	if repititions[key] > 20:
 #		print(key, avg_period[key], repititions[key])
 
-with open('beacon_data.csv', 'w+') as csvfile:
+with open(csv_filename, 'w+') as csvfile:
 	writer = csv.writer(csvfile, delimiter=',')
 	writer.writerow(["Source IP", "Destination IP", "NumRepititions", "AvgPeriod", "PeriodVariance", "label"])
 	for key in avg_period:
 		if key[1] in c2serverIP:
 			writer.writerow([key[0], key[1], repititions[key], avg_period[key], period_variance[key], "beacon"])
-		else:
+		elif period_variance[key] < 225:
 			writer.writerow([key[0], key[1], repititions[key], avg_period[key], period_variance[key], "non-beacon"])
 
 
